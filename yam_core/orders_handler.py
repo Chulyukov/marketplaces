@@ -1,9 +1,11 @@
+import asyncio
+
 from link_for_marketplace.generate_link_method import generate_links
 from yam_core.db_yam import db_get_product_data_by_yam_sku
 from yam_core.yam_api import YamApi
 
 
-def handle_orders():
+async def handle_orders():
     # Получаем список новых заказов
     yam_api = YamApi()
     orders_list = yam_api.get_new_orders()
@@ -35,4 +37,4 @@ def handle_orders():
         yam_api.send_requested_items(order_id, basket)  # Отправляем заказ клиенту (order_id - номер заказа, basket - тело запроса)
 
 
-handle_orders()
+asyncio.run(handle_orders())
