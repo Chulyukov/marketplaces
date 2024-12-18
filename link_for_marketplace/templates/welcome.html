@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='favicons/favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='favicons/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='favicons/site.webmanifest') }}">
+    <link rel="icon" sizes="192x192" href="{{ url_for('static', filename='favicons/android-chrome-192x192.png') }}">
+    <link rel="icon" sizes="512x512" href="{{ url_for('static', filename='favicons/android-chrome-512x512.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='favicons/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='favicons/favicon-32x32.png') }}">
+    <title>Ваша eSIM готова | eSIM Unity</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}" media="all">
+</head>
+<body>
+    <div class="outer-container">
+        <div class="inner-container">
+            <h1>Ваша eSIM готова!</h1>
+            <div class="image-container">
+                <img src="data:image/png;base64,{{ qr_code }}" alt="QR-код для установки eSIM" loading="lazy">
+            </div>
+            <ul class="details">
+                <li><strong>Страна:</strong> Турция 🇹🇷</li>
+                <li><strong>Остаток трафика:</strong> {{ gb_amount }} ГБ 📶</li>
+            </ul>
+            <div class="links">
+                <div class="link-item">
+                    <p>📱 <strong>Ссылка для установки на iPhone</strong></p>
+                    <a href="{{ ios_universal_installation_link }}" target="_blank" class="link">{{ ios_universal_installation_link }}</a>
+                </div>
+                <div class="link-item">
+                    <p>🔗 <strong>Инструкция для всех устройств</strong></p>
+                    <a href="https://telegra.ph/Instrukcii-po-podklyucheniyu-eSIM-12-10" target="_blank" class="link">https://telegra.ph/Instrukcii-po-podklyucheniyu-eSIM-12-10/</a>
+                </div>
+<!--                <div class="link-item">-->
+<!--                    <p>🛍️ <strong>Наши маркетплейсы:</strong></p>-->
+<!--                    <div class="logo-links">-->
+<!--                        <div class="logo-item">-->
+<!--                            <div class="logo-container">-->
+<!--                                <img src="{{ url_for('static', filename='images/ozon-logo.png') }}" alt="Ozon">-->
+<!--                            </div>-->
+<!--                            <a href="https://t.me/esim_unity_support" target="_blank" class="logo-link">Посетите наш магазин на Ozon</a>-->
+<!--                        </div>-->
+<!--                        <div class="logo-item">-->
+<!--                            <div class="logo-container">-->
+<!--                                <img src="{{ url_for('static', filename='images/yandex-market-logo.png') }}" alt="Yandex Market">-->
+<!--                            </div>-->
+<!--                            <a href="https://wa.me/yourwhatsapplink" target="_blank" class="logo-link">Посетите наш магазин на Яндекс.Маркете</a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+                <div class="link-item">
+                    <p>💬 <strong>Поддержка</strong></p>
+                    <div class="logo-links">
+                        <div class="logo-item">
+                            <div class="logo-container">
+                                <img src="{{ url_for('static', filename='images/telegram-logo.png') }}" alt="Telegram">
+                            </div>
+                            <a href="https://t.me/esim_unity_support" target="_blank" class="logo-link">Напишите нам в Telegram</a>
+                        </div>
+                        <div class="logo-item">
+                            <div class="logo-container">
+                                <img src="{{ url_for('static', filename='images/whatsapp-logo.png') }}" alt="WhatsApp">
+                            </div>
+                            <a href="https://wa.me/22943343372" target="_blank" class="logo-link">Свяжитесь с нами в WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer class="footer">
+                <strong>Путешествуйте с <span class="brand">eSIM Unity</span> — интернет всегда под рукой в любой точке мира!</strong>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>
