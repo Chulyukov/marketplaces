@@ -56,4 +56,4 @@ def generate_links(esim_number, country, gb_amount, is_files=True):
 
 # Генерация одного eSIM для Турции с объемом 3 ГБ
 # generate_links(25, "kazakhstan", 20)
-generate_qr_code("LPA:1$comiumgmb.rsp.instant-connectivity.com$D5F6B-B3595-E5C56-8AD36", os.path.join("qr_codes/lol.png"))
+# generate_qr_code("LPA:1$comiumgmb.rsp.instant-connectivity.com$D5F6B-B3595-E5C56-8AD36", os.path.join("qr_codes/lol.png"))
