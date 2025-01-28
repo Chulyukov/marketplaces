@@ -51,7 +51,7 @@ def generate_links(esim_number, country, gb_amount, is_files=True):
             db_insert_esims(esim_list)
     else:
         db_insert_esims(esim_list)
-        return [f"https://esimunity.ru/{esim['country']}/{esim['volume']}/{esim['id']}" for esim in esim_list]
+        return [f"https://esimunity.ru/{esim['country']}/{esim['gb_amount']}/{esim['id']}" for esim in esim_list]
 
 
 # Генерация одного eSIM для Турции с объемом 3 ГБ
