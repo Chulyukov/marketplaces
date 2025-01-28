@@ -1,10 +1,12 @@
-import base64
 import logging
 import os
+import qrcode
+import asyncio
+from io import BytesIO
+import base64
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
-import httpx
 import redis
 from quart import Quart, render_template
 
@@ -39,12 +41,37 @@ logger.setLevel(logging.INFO)  # Логируем только ERROR и выше
 logger.addHandler(file_handler)
 
 
-async def generate_qr_code(data_url):
-    """Асинхронная загрузка QR-кода по URL и конвертация в base64"""
-    async with httpx.AsyncClient() as client:
-        response = await client.get(data_url)
-        response.raise_for_status()  # Обработка ошибок загрузки
-        return base64.b64encode(response.content).decode("utf-8")
+async def generate_qr_code(activation_code: str) -> str:
+    """
+    Асинхронно генерирует QR-код для строки активации eSIM.
+    :param activation_code: Строка активации eSIM (LPA:...)
+    :return: Base64-кодированный QR-код
+    """
+
+    def create_qr():
+        # Генерация QR-кода
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(activation_code)
+        qr.make(fit=True)
+
+        # Сохранение QR-кода в буфер
+        buffer = BytesIO()
+        img = qr.make_image(fill_color="black", back_color="white")
+        img.save(buffer, format="PNG")
+        buffer.seek(0)
+        return buffer
+
+    # Выполнение генерации QR-кода в отдельном потоке
+    buffer = await asyncio.to_thread(create_qr)
+
+    # Преобразование изображения в base64
+    qr_code_base64 = base64.b64encode(buffer.getvalue()).decode("utf-8")
+    return qr_code_base64
 
 
 def get_country_info(country):
