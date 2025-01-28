@@ -1,9 +1,7 @@
-from pprint import pprint
 
 import requests
 
 from config import Config
-from link_for_marketplace.flask_core import logger
 
 
 class MontyApi:

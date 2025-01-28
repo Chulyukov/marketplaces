@@ -1,8 +1,5 @@
 from dataclasses import dataclass
 
-from aiogram import Bot
-from aiogram.client.default import DefaultBotProperties
-
 
 @dataclass
 class Config:

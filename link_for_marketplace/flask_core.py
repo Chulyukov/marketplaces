@@ -9,9 +9,9 @@ import redis
 from quart import Quart, render_template
 
 from config import Config
-from db.db_queries import db_get_emoji_from_two_tables, db_get_ru_name_from_two_tables, db_get_product_id
-from link_for_marketplace.db_link import db_get_date, db_switch_status_on_activated, db_update_iccid_and_activation_code, db_get_iccid_and_activation_code, \
-    db_get_link_status, db_fill_date
+from db.db_queries import db_get_emoji_from_two_tables, db_get_ru_name_from_two_tables
+from link_for_marketplace.db_link import db_get_date, db_switch_status_on_activated, \
+    db_update_iccid_and_activation_code, db_get_link_status, db_fill_date
 from monty_api import MontyApi
 
 # Инициализация Quart и Redis
