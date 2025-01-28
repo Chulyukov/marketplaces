@@ -82,8 +82,7 @@ class MontyApi:
                 bundle_code = necessary_bundle["bundle_code"]
         return bundle_code
 
-    def activate_esim(self, country: str, gb_amount: str, uuid: str):
-        bundle_code = self.get_necessary_bundle_code(country, gb_amount)
+    def activate_esim(self, bundle_code: str, uuid: str):
         body = {
             "bundle_code": bundle_code,
             "whatsapp_number": "+79774879583",

@@ -79,10 +79,11 @@ async def render_expired_page():
     )
 
 
-async def render_error_page():
+async def render_error_page(bundle_code: str):
     """Рендеринг страницы с ошибкой"""
     return await render_template(
         'error_page.html',
+        bundle_code=bundle_code
     )
 
 
@@ -95,6 +96,8 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
     if cached_page:
         return cached_page
 
+    bundle_code = ""
+
     try:
         status = db_get_link_status(uuid)
         if status == "unactivated":
@@ -106,7 +109,8 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
 
         monty = MontyApi()
         if status == "unactivated":
-            monty.activate_esim(country, gb_amount, uuid)
+            bundle_code = monty.get_necessary_bundle_code(country, gb_amount)
+            monty.activate_esim(bundle_code, uuid)
             esim_info = monty.get_esim_info(uuid)
 
             db_switch_status_on_activated(uuid)
@@ -126,7 +130,7 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
     except Exception as e:
         # Логируем только ошибки
         logger.error(f"{uuid} : {str(e)}\n", exc_info=True)
-        return await render_error_page(), 500
+        return await render_error_page(bundle_code), 500
 
 
 if __name__ == '__main__':
