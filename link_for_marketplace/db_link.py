@@ -11,14 +11,14 @@ def db_insert_esims(esims):
     )
 
 
-def db_get_esim_data(esim_id):
+def db_get_date(esim_id):
     """Получаем данные esim"""
     result = execute_query(
         "Ошибка при получении данных по eSIM",
-        "SELECT created_at, status FROM links WHERE id=%s",
+        "SELECT created_at FROM links WHERE id=%s",
         (esim_id,),
     )
-    return result[0] if result else None
+    return result[0][0] if result else None
 
 
 def db_get_link_status(esim_id):
@@ -45,18 +45,18 @@ def db_fill_date(esim_id):
                   (esim_id,))
 
 
-def db_update_iccid(iccid, esim_id):
-    """Записываем iccid созданной esim"""
+def db_update_iccid_and_activation_code(iccid, activation_code, esim_id):
+    """Записываем iccid и activation_code созданной esim"""
     execute_query("Ошибка при записи iccid созданной esim",
-                  "UPDATE links SET iccid=%s WHERE id=%s",
-                  (iccid, esim_id,))
+                  "UPDATE links SET iccid=%s AND activation_code=%s WHERE id=%s",
+                  (iccid, activation_code, esim_id,))
 
 
-def db_get_iccid(esim_id):
-    """Получаем iccid"""
+def db_get_iccid_and_activation_code(esim_id):
+    """Получаем iccid и activation_code"""
     result = execute_query(
-        "Ошибка при получении iccid",
-        "SELECT iccid FROM links WHERE id=%s",
+        "Ошибка при получении iccid и activation_code",
+        "SELECT iccid, activation_code FROM links WHERE id=%s",
         (esim_id,),
     )
-    return result[0][0] if result else None
+    return {"iccid": result[0][0], "activation_code": result[0][1]} if result else None

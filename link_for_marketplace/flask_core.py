@@ -8,11 +8,11 @@ import httpx
 import redis
 from quart import Quart, render_template
 
-from bnesim_api import BnesimApi
 from config import Config
 from db.db_queries import db_get_emoji_from_two_tables, db_get_ru_name_from_two_tables, db_get_product_id
-from link_for_marketplace.db_link import db_get_esim_data, db_switch_status_on_activated, db_update_iccid, db_get_iccid, \
+from link_for_marketplace.db_link import db_get_date, db_switch_status_on_activated, db_update_iccid_and_activation_code, db_get_iccid_and_activation_code, \
     db_get_link_status, db_fill_date
+from monty_api import MontyApi
 
 # Инициализация Quart и Redis
 app = Quart(__name__, static_folder='static')
@@ -100,32 +100,26 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
         if status == "unactivated":
             db_fill_date(uuid)
 
-        data = db_get_esim_data(uuid)
-        if (datetime.now() - data[0]).days >= 30:
+        date = db_get_date(uuid)
+        if (datetime.now() - date).days >= 30:
             return await render_expired_page()
 
-        country_info = get_country_info(country)
-        instructions_link = Config.QUESTIONS_LINK
-        bnesim = BnesimApi()
+        monty = MontyApi()
+        if status == "unactivated":
+            monty.activate_esim(country, gb_amount, uuid)
+            esim_info = monty.get_esim_info(uuid)
 
-        if data[1] == "unactivated":
             db_switch_status_on_activated(uuid)
-            product_id = db_get_product_id(country, int(gb_amount))
-            active_esim = bnesim.activate_esim("558947250", product_id)
-            db_update_iccid(active_esim["iccid"], uuid)
-
-            gb_amount_display = f"{gb_amount}.0"
-            ios_link = active_esim["ios_universal_installation_link"]
-            qr_code = await generate_qr_code(active_esim["qr_code_url"])
+            db_update_iccid_and_activation_code(esim_info["iccid"], esim_info["activation_code"], uuid)
         else:
-            iccid = db_get_iccid(uuid)
-            esim_info = bnesim.get_esim_info(iccid)
+            esim_info = monty.get_esim_info(uuid)
+            gb_amount = monty.get_remaining_data(esim_info["order_id"])
 
-            gb_amount_display = esim_info["remaining_data"]
-            ios_link = esim_info["ios_link"]
-            qr_code = await generate_qr_code(esim_info["qr_code_url"])
+        ios_link = f"https://esimsetup.apple.com/esim_qrcode_provisioning?carddata={esim_info["activation_code"]}"
+        qr_code = await generate_qr_code(esim_info["activation_code"])
+        country_info = get_country_info(country)
 
-        rendered_page = await render_esim_page(country_info, gb_amount_display, ios_link, qr_code, instructions_link)
+        rendered_page = await render_esim_page(country_info, f"{gb_amount}.0", ios_link, qr_code, Config.QUESTIONS_LINK)
         cache_page(cache_key, CACHE_TTL, rendered_page)
         return rendered_page
 
