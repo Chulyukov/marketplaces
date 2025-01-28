@@ -82,8 +82,6 @@ class MontyApi:
             if bundle_price > necessary_bundle["reseller_retail_price"]:
                 bundle_price = necessary_bundle["reseller_retail_price"]
                 bundle_code = necessary_bundle["bundle_code"]
-                logger.info(f"/Bundles: {necessary_bundle["bundle_category"]} - {necessary_bundle["reseller_retail_price"]}")
-        logger.info(f"/Bundles: final_bundle = {bundle_code}")
         return bundle_code
 
     def activate_esim(self, country: str, gb_amount: str, uuid: str):
