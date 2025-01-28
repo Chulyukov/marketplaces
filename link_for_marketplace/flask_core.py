@@ -35,7 +35,7 @@ file_handler.setFormatter(log_formatter)
 
 # Настройка основного логгера
 logger = logging.getLogger()
-logger.setLevel(logging.ERROR)  # Логируем только ERROR и выше
+logger.setLevel(logging.INFO)  # Логируем только ERROR и выше
 logger.addHandler(file_handler)
 
 

@@ -106,7 +106,7 @@ class MontyApi:
         return response["data_remaining"]
 
 
-monty = MontyApi()
-result = monty.get_esim_info("ugdafysgi142124fwf")
-pprint(result)
+# monty = MontyApi()
+# result = monty.get_esim_info("ugdafysgi142124fwf")
+# pprint(result)
 # print(f"\nLength:{len(result)}")
