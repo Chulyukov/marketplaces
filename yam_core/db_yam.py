@@ -9,8 +9,3 @@ def db_get_product_data_by_yam_sku(yam_sku):
         (yam_sku,)
     )
     return {"country": result[0][0], "volume": result[0][1]} if result else None
-
-
-info = db_get_product_data_by_yam_sku("MRKT-MI9CRI4N")
-print(info["country"])
-print(info["volume"])
