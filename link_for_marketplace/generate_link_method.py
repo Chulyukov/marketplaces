@@ -1,9 +1,9 @@
 import base64
 import io
 import os
-import uuid
 
 import qrcode
+import shortuuid
 
 from link_for_marketplace.db_link import db_insert_esims
 
@@ -37,7 +37,7 @@ def generate_qr_code(data, save_path=None):
 def generate_links(esim_number, country, gb_amount, is_files=True):
     """Генерация ссылок с QR-кодами."""
     # Создаем список eSIM
-    esim_list = [{"id": str(uuid.uuid4()), "country": country, "gb_amount": gb_amount} for _ in range(esim_number)]
+    esim_list = [{"id": str(shortuuid.uuid()), "country": country, "gb_amount": gb_amount} for _ in range(esim_number)]
 
     # Создаем папку для сохранения QR-кодов
     output_dir = "qr_codes"

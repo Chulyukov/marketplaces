@@ -102,6 +102,7 @@ class MontyApi:
 
 
 # monty = MontyApi()
-# result = monty.get_esim_info("ugdafysgi142124fwf")
-# pprint(result)
+# monty.activate_esim("TUR_0405202408472420", "Z2JWrhoCNXSrMbUntVH6UZW")
+# result = monty.get_esim_info("Z2JWrhoCNXSrMbUntVH6UZW")
+# print(result)
 # print(f"\nLength:{len(result)}")
