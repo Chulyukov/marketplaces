@@ -150,7 +150,7 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
         qr_code = await generate_qr_code(esim_info["activation_code"])
         country_info = get_country_info(country)
 
-        rendered_page = await render_esim_page(country_info, f"{gb_amount}.0", ios_link, qr_code, Config.QUESTIONS_LINK)
+        rendered_page = await render_esim_page(country_info, f"{round(gb_amount / 1024, 2)}", ios_link, qr_code, Config.QUESTIONS_LINK)
         cache_page(cache_key, CACHE_TTL, rendered_page)
         return rendered_page
 
