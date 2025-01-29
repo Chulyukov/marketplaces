@@ -38,6 +38,13 @@ def db_switch_status_on_activated(esim_id):
                   (esim_id,))
 
 
+def db_update_uuid(esim_id, new_esim_id):
+    """Меняем uuid старого образца (bnesim) на новый (monty)"""
+    execute_query("Ошибка при изменении  uuid",
+                  "UPDATE links SET id=%s WHERE id=%s",
+                  (new_esim_id, esim_id,))
+
+
 def db_fill_date(esim_id):
     """Заполняем дату"""
     execute_query("Ошибка при переключении статуса на activated",

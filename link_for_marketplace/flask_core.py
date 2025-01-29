@@ -8,12 +8,13 @@ from datetime import datetime
 from logging.handlers import RotatingFileHandler
 
 import redis
+import shortuuid
 from quart import Quart, render_template
 
 from config import Config
 from db.db_queries import db_get_emoji_from_two_tables, db_get_ru_name_from_two_tables
 from link_for_marketplace.db_link import db_get_date, db_switch_status_on_activated, \
-    db_update_iccid_and_activation_code, db_get_link_status, db_fill_date
+    db_update_iccid_and_activation_code, db_get_link_status, db_fill_date, db_update_uuid
 from monty_api import MontyApi
 
 # Инициализация Quart и Redis
@@ -116,6 +117,12 @@ async def render_error_page(bundle_code: str):
 
 @app.route('/<country>/<gb_amount>/<uuid>')
 async def welcome_page(country: str, gb_amount: str, uuid: str):
+    # Переписываем длинный uuid на короткий для корректной валидации monty поля order_reference в методе activate_esim()
+    if len(uuid) > 22:
+        new_uuid = str(shortuuid.uuid())
+        db_update_uuid(uuid, new_uuid)
+        uuid = new_uuid
+
     cache_key = f"esim:{country}:{gb_amount}:{uuid}"
 
     # Проверка кэша
