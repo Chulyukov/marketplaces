@@ -1,18 +1,18 @@
+import asyncio
+import base64
 import logging
 import os
-import qrcode
-import asyncio
-from io import BytesIO
-import base64
 from datetime import datetime
+from io import BytesIO
 from logging.handlers import RotatingFileHandler
 
+import qrcode
 import redis
 import shortuuid
 from quart import Quart, render_template
 
 from config import Config
-from db.db_queries import db_get_emoji_from_two_tables, db_get_ru_name_from_two_tables
+from db.db_queries import db_get_emoji_and_ru_name
 from link_for_marketplace.db_link import db_get_date, db_switch_status_on_activated, \
     db_update_iccid_and_activation_code, db_get_link_status, db_fill_date, db_update_uuid
 from monty_api import MontyApi
@@ -77,9 +77,8 @@ async def generate_qr_code(activation_code: str) -> str:
 
 def get_country_info(country):
     """Получение информации о стране (название и эмодзи)"""
-    emoji = db_get_emoji_from_two_tables(country)
-    country_name = db_get_ru_name_from_two_tables(country).capitalize()
-    return f"{country_name} {emoji}"
+    country_info = db_get_emoji_and_ru_name(country)
+    return f"{country_info["emoji"]} {country_info["country"].capitalize()}"
 
 
 def cache_page(key, ttl, page_content):
@@ -146,18 +145,19 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
             bundle_code = monty.get_necessary_bundle_code(country, gb_amount)
             monty.activate_esim(bundle_code, uuid)
             esim_info = monty.get_esim_info(uuid)
+            gb_amount = f"{gb_amount}.0"
 
             db_switch_status_on_activated(uuid)
             db_update_iccid_and_activation_code(esim_info["iccid"], esim_info["activation_code"], uuid)
         else:
             esim_info = monty.get_esim_info(uuid)
-            gb_amount = monty.get_remaining_data(esim_info["order_id"])
+            gb_amount = round(float(monty.get_remaining_data(esim_info["order_id"])) / 1024, 2)
 
         ios_link = f"https://esimsetup.apple.com/esim_qrcode_provisioning?carddata={esim_info["activation_code"]}"
         qr_code = await generate_qr_code(esim_info["activation_code"])
         country_info = get_country_info(country)
 
-        rendered_page = await render_esim_page(country_info, f"{round(float(gb_amount) / 1024, 2)}", ios_link, qr_code, Config.QUESTIONS_LINK)
+        rendered_page = await render_esim_page(country_info, f"{gb_amount}", ios_link, qr_code, Config.QUESTIONS_LINK)
         cache_page(cache_key, CACHE_TTL, rendered_page)
         return rendered_page
 

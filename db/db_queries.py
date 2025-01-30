@@ -19,29 +19,12 @@ def db_add_user(chat_id, username, activation_datetime):
                   (chat_id, username, activation_datetime,))
 
 
-def db_get_emoji_from_two_tables(country):
-    """Получаем emoji из одной таблицы (либо countries, либо regions: зависит от того, где присутствует направление)"""
-    result = execute_query("Ошибка при получении emoji",
-                           "SELECT emoji FROM countries WHERE name = %s",
+def db_get_emoji_and_ru_name(country):
+    """Получаем emoji и название страны на русском из таблицы стран"""
+    result = execute_query("Ошибка при получении emoji и ru_name",
+                           "SELECT emoji, ru_name FROM countries WHERE name = %s",
                            (country,))
-    if not result:
-        result = execute_query("Ошибка при получении emoji",
-                               "SELECT emoji FROM regions WHERE name = %s",
-                               (country,))
-    return result[0][0] if result else None
-
-
-def db_get_ru_name_from_two_tables(country):
-    """Получаем ru_name из одной таблицы
-    (либо countries, либо regions: зависит от того, где присутствует направление)"""
-    result = execute_query("Ошибка при получении emoji",
-                           "SELECT ru_name FROM countries WHERE name = %s",
-                           (country,))
-    if not result:
-        result = execute_query("Ошибка при получении emoji",
-                               "SELECT ru_name FROM regions WHERE name = %s",
-                               (country,))
-    return result[0][0] if result else None
+    return {"emoji": result[0][0], "country": result[0][1]} if result else None
 
 
 def db_get_bnesim_products():
