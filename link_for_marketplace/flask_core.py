@@ -148,7 +148,6 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
             gb_amount = f"{gb_amount}.0"
 
             db_switch_status_on_activated(uuid)
-            db_update_iccid_and_activation_code(esim_info["iccid"], esim_info["activation_code"], uuid)
         else:
             esim_info = monty.get_esim_info(uuid)
             gb_amount = str(round(float(monty.get_remaining_data(esim_info["order_id"])) / 1000, 2))
