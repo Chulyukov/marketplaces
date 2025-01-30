@@ -151,7 +151,7 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
             db_update_iccid_and_activation_code(esim_info["iccid"], esim_info["activation_code"], uuid)
         else:
             esim_info = monty.get_esim_info(uuid)
-            gb_amount = str(round(float(monty.get_remaining_data(esim_info["order_id"])) / 1024, 2))
+            gb_amount = str(round(float(monty.get_remaining_data(esim_info["order_id"])) / 1000, 2))
 
         ios_link = f"https://esimsetup.apple.com/esim_qrcode_provisioning?carddata={esim_info["activation_code"]}"
         qr_code = await generate_qr_code(esim_info["activation_code"])
