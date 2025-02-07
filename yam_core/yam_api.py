@@ -27,7 +27,7 @@ class YamApi:
         return self._request("POST", path, **kwargs)
 
     def get_new_orders(self):
-        return self._get(f"//campaigns/{self.campaign_id}/orders?fake=true&status=PROCESSING")["orders"]
+        return self._get(f"//campaigns/{self.campaign_id}/orders?fake=false&status=PROCESSING")["orders"]
 
     def send_requested_items(self, order_id, body):
         return self._post(f"/campaigns/{self.campaign_id}/orders/{order_id}/deliverDigitalGoods", json=body)
