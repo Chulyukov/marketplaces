@@ -132,25 +132,19 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
     bundle_code = ""
 
     try:
+        monty = MontyApi()
         status = db_get_link_status(uuid)
         if status == "unactivated":
             db_fill_date(uuid)
+            bundle_code = monty.get_necessary_bundle_code(country, gb_amount)
+            monty.activate_esim(bundle_code, uuid)
+            db_switch_status_on_activated(uuid)
 
         date = db_get_date(uuid)
         if (datetime.now() - date).days >= 30:
             return await render_expired_page()
 
-        monty = MontyApi()
-        if status == "unactivated":
-            bundle_code = monty.get_necessary_bundle_code(country, gb_amount)
-            monty.activate_esim(bundle_code, uuid)
-            esim_info = monty.get_esim_info(uuid)
-            gb_amount = f"{gb_amount}.0"
-
-            db_switch_status_on_activated(uuid)
-        else:
-            esim_info = monty.get_esim_info(uuid)
-            gb_amount = str(round(float(monty.get_remaining_data(esim_info["order_id"])) / 1000, 2))
+        esim_info = monty.get_esim_info(uuid)
 
         ios_link = f"https://esimsetup.apple.com/esim_qrcode_provisioning?carddata={esim_info["activation_code"]}"
         qr_code = await generate_qr_code(esim_info["activation_code"])
