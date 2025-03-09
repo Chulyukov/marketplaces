@@ -74,12 +74,15 @@ class MontyApi:
                     and (f"{gb_amount}GB" in bundle["bundle_name"] or f"{float(gb_amount) * 1024}MB")):
                 necessary_bundles.append(bundle)
 
+        subscriber_price = ""
         bundle_price = 10000
         bundle_code = ""
         for necessary_bundle in necessary_bundles:
             if bundle_price > necessary_bundle["reseller_retail_price"]:
                 bundle_price = necessary_bundle["reseller_retail_price"]
                 bundle_code = necessary_bundle["bundle_code"]
+                subscriber_price = necessary_bundle["subscriber_price"]
+        print(subscriber_price)
         return bundle_code
 
     def activate_esim(self, bundle_code: str, uuid: str):
@@ -102,6 +105,7 @@ class MontyApi:
 
 
 # monty = MontyApi()
+# result = monty.get_necessary_bundle_code("japan", "20")
 # monty.activate_esim("TUR_0405202408472420", "Z2JWrhoCNXSrMbUntVH6UZW")
 # result = monty.get_esim_info("Z2JWrhoCNXSrMbUntVH6UZW")
 # print(result)
