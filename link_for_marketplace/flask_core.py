@@ -129,6 +129,7 @@ async def welcome_page(country: str, gb_amount: str, uuid: str):
     if cached_page:
         return cached_page
 
+    country = country.replace("-", " ")
     bundle_code = ""
 
     try:

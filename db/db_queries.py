@@ -20,29 +20,6 @@ def db_get_emoji_and_ru_name(country):
     return {"emoji": result[0][0], "country": result[0][1]} if result else None
 
 
-def db_get_yam_countries():
-    """Получаем страны в таблицу"""
-    result = execute_query("Ошибка при добавлении новой страны или при обновлении уже существующей",
-                           "SELECT product_id, country, volume, price FROM yam_countries")
-    return {row[0]: {"country": row[1], "volume": row[2], "price": row[3]} for row in result}
-
-
-def db_get_price_data(country: str):
-    """Получаем volume и price"""
-    result = execute_query("Ошибка при получении volume и price",
-                           "SELECT volume, price FROM yam_countries WHERE country = %s",
-                           (country,))
-    return {data[0]: {"price": data[1]} for data in result}
-
-
-def db_get_product_id(country, volume):
-    """Получаем product_id"""
-    result = execute_query("Ошибка при получении product_id",
-                           "SELECT product_id FROM yam_countries WHERE country = %s AND volume = %s",
-                           (country, volume,))[0][0]
-    return result if result else None
-
-
 def db_update_cli(chat_id, cli):
     """Добавлям cli"""
     execute_query("Ошибка при добавлении cli",
