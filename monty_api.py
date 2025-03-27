@@ -45,16 +45,6 @@ class MontyApi:
     def get_necessary_bundle_code(self, country: str, gb_amount: str):
         necessary_bundles = []
 
-        global_bundles = self._get(
-            f"/Bundles?page_size=100&page_number=1&bundle_category=global&sort_by=price_asc&reseller_admin_view=true"
-        )
-        for bundle in global_bundles["bundles"]:
-            if (bundle["gprs_limit"] == float(gb_amount)
-                    and bundle["validity"] == 30
-                    and (f"{gb_amount}GB" in bundle["bundle_name"] or f"{float(gb_amount) * 1024}MB")
-                    and country.capitalize() in bundle["country_name"]):
-                necessary_bundles.append(bundle)
-
         region_bundles = self._get(
             f"/Bundles?page_size=100&page_number=1&bundle_category=region&sort_by=price_asc&reseller_admin_view=true"
         )
