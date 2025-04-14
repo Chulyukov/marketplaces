@@ -49,10 +49,11 @@ class MontyApi:
             f"/Bundles?page_size=100&page_number=1&bundle_category=global&sort_by=price_asc&reseller_admin_view=true"
         )
         for bundle in global_bundles["bundles"]:
-            if (bundle["gprs_limit"] == float(gb_amount)
+            if ((bundle["gprs_limit"] == float(gb_amount)
                     and bundle["validity"] == 30
                     and (f"{gb_amount}GB" in bundle["bundle_name"] or f"{float(gb_amount) * 1024}MB")
-                    and country.capitalize() in bundle["country_name"]):
+                    and country.title() in bundle["country_name"])
+                    and (bundle["bundle_marketing_name"] == "EuroTurk")):
                 necessary_bundles.append(bundle)
 
         region_bundles = self._get(
@@ -62,7 +63,8 @@ class MontyApi:
             if (bundle["gprs_limit"] == float(gb_amount)
                     and bundle["validity"] == 30
                     and (f"{gb_amount}GB" in bundle["bundle_name"] or f"{float(gb_amount) * 1024}MB")
-                    and country.capitalize() in bundle["country_name"]):
+                    and country.title() in bundle["country_name"])\
+                    and bundle["bundle_marketing_name"] != "Europe+":
                 necessary_bundles.append(bundle)
 
         country_bundles = self._get(
@@ -105,7 +107,15 @@ class MontyApi:
 
 
 # monty = MontyApi()
-# result = monty.get_necessary_bundle_code("japan", "20")
+# result = monty.get_necessary_bundle_code("turkey", "3")
+# print(result)
+# result = monty.get_necessary_bundle_code("turkey", "5")
+# print(result)
+# result = monty.get_necessary_bundle_code("turkey", "10")
+# print(result)
+# result = monty.get_necessary_bundle_code("turkey", "20")
+# print(result)
+# result = monty.get_necessary_bundle_code("turkey", "50")
 # monty.activate_esim("TUR_0405202408472420", "Z2JWrhoCNXSrMbUntVH6UZW")
 # result = monty.get_esim_info("Z2JWrhoCNXSrMbUntVH6UZW")
 # print(result)
